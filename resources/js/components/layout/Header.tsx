@@ -72,7 +72,7 @@ export default function Header() {
     { href: "/login", label: "ورود", icon: <FaUser />, color: "gray" },
 
     {
-      href: "/request-service",
+      href: "/register",
       label: "درخواست",
       icon: <FaPlus />,
       color: "green",

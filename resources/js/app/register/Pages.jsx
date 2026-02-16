@@ -1,43 +1,40 @@
 // src/app/register/page.jsx
-'use client';
+import { useState } from "react";
+import { Link, router } from "@inertiajs/react";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { 
   FaUserPlus, FaUser, FaLock, FaEye, FaEyeSlash, 
   FaPhone, FaEnvelope, FaCheckCircle, FaExclamationTriangle,
   FaArrowLeft, FaShieldAlt, FaGoogle, FaFacebook
-} from 'react-icons/fa';
+} from "react-icons/fa";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [registerMethod, setRegisterMethod] = useState('email'); // 'email' یا 'phone'
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [registerMethod, setRegisterMethod] = useState("email");
   const [passwordStrength, setPasswordStrength] = useState(0);
 
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
+    fullName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
     agreeToTerms: false,
-    receiveNewsletter: true
+    receiveNewsletter: true,
   });
 
   // بررسی قدرت رمز عبور
   const checkPasswordStrength = (password) => {
     let strength = 0;
-    if (password.length >= 8) strength += 1;
-    if (/[A-Z]/.test(password)) strength += 1;
-    if (/[a-z]/.test(password)) strength += 1;
-    if (/[0-9]/.test(password)) strength += 1;
-    if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
     return strength;
   };
 
@@ -46,59 +43,60 @@ export default function RegisterPage() {
     setPasswordStrength(checkPasswordStrength(password));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     // اعتبارسنجی
     if (!formData.fullName.trim()) {
-      setError('لطفا نام کامل خود را وارد کنید');
+      setError("لطفا نام کامل خود را وارد کنید");
       return;
     }
 
-    if (registerMethod === 'email' && !formData.email.trim()) {
-      setError('لطفا ایمیل خود را وارد کنید');
+    if (registerMethod === "email" && !formData.email.trim()) {
+      setError("لطفا ایمیل خود را وارد کنید");
       return;
     }
 
-    if (registerMethod === 'phone' && !formData.phone.trim()) {
-      setError('لطفا شماره موبایل خود را وارد کنید');
+    if (registerMethod === "phone" && !formData.phone.trim()) {
+      setError("لطفا شماره موبایل خود را وارد کنید");
       return;
     }
 
     if (!formData.password.trim()) {
-      setError('لطفا رمز عبور خود را وارد کنید');
+      setError("لطفا رمز عبور خود را وارد کنید");
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError('رمز عبور و تکرار آن مطابقت ندارند');
+      setError("رمز عبور و تکرار آن مطابقت ندارند");
       return;
     }
 
     if (!formData.agreeToTerms) {
-      setError('لطفا با قوانین و مقررات موافقت کنید');
+      setError("لطفا با قوانین و مقررات موافقت کنید");
       return;
     }
 
     setIsLoading(true);
 
-    // شبیه‌سازی ثبت‌نام
-    setTimeout(() => {
-      setIsLoading(false);
-      setSuccess('ثبت‌نام با موفقیت انجام شد! در حال هدایت به صفحه اصلی...');
-      
-      // هدایت بعد از 2 ثانیه
-      setTimeout(() => {
-        router.push('/');
-      }, 2000);
-    }, 2000);
+    // ✅ Inertia Register Request
+    router.post("/register", formData, {
+      onSuccess: () => {
+        setSuccess("ثبت‌نام با موفقیت انجام شد ✅");
+      },
+
+      onError: (errors) => {
+        setError(errors.message || "خطا در ثبت‌نام");
+      },
+
+      onFinish: () => setIsLoading(false),
+    });
   };
 
   const handleSocialRegister = (provider) => {
     console.log(`ثبت‌نام با ${provider}`);
-    // منطق ثبت‌نام با شبکه اجتماعی
   };
 
   return (
