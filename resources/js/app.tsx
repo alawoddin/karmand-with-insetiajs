@@ -4,16 +4,18 @@ import { createRoot } from "react-dom/client";
 import "./app/globals.css";
 
 createInertiaApp({
-  resolve: (name) => {
-    const pages = import.meta.glob("./app/**/*.tsx");
+  resolve: async (name) => {
+    const pages = import.meta.glob("./app/**/*.{tsx,jsx}");
 
-    const page = pages[`./app/${name}.tsx`];
+    const page =
+      pages[`./app/${name}.tsx`] ||
+      pages[`./app/${name}.jsx`];
 
     if (!page) {
       throw new Error(`Page not found: ${name}`);
     }
 
-    return page();
+    return await page();
   },
 
   setup({ el, App, props }) {

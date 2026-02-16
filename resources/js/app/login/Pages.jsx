@@ -1,54 +1,54 @@
 // src/app/login/page.jsx
-'use client';
+import { useState } from "react";
+import { Link, router } from "@inertiajs/react";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { 
   FaUser, FaLock, FaEye, FaEyeSlash, FaPhone, 
   FaEnvelope, FaGoogle, FaFacebook, FaTwitter,
   FaCheckCircle, FaExclamationTriangle
-} from 'react-icons/fa';
+} from "react-icons/fa";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    emailOrPhone: '',
-    password: '',
-    rememberMe: false
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [loginMethod, setLoginMethod] = useState('email'); // 'email' یا 'phone'
 
-  const handleSubmit = async (e) => {
+  const [formData, setFormData] = useState({
+    emailOrPhone: "",
+    password: "",
+    rememberMe: false,
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [loginMethod, setLoginMethod] = useState("email"); // email | phone
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError('');
-    
+    setError("");
+
     // اعتبارسنجی ساده
     if (!formData.emailOrPhone.trim()) {
-      setError('لطفا ایمیل یا شماره موبایل خود را وارد کنید');
+      setError("لطفا ایمیل یا شماره موبایل خود را وارد کنید");
       return;
     }
-    
+
     if (!formData.password.trim()) {
-      setError('لطفا رمز عبور خود را وارد کنید');
+      setError("لطفا رمز عبور خود را وارد کنید");
       return;
     }
-    
+
     setIsLoading(true);
-    
-    // شبیه‌سازی فرآیند لاگین
-    setTimeout(() => {
-      setIsLoading(false);
-      // در اینجا به دشبورد هدایت می‌شود
-      router.push('/dashboard');
-    }, 1500);
+
+    // ✅ Inertia Login Request
+    router.post("/login", formData, {
+      onFinish: () => setIsLoading(false),
+
+      onError: (errors) => {
+        setError(errors.message || "اطلاعات ورود اشتباه است");
+      },
+    });
   };
 
   const handleSocialLogin = (provider) => {
-    // منطق ورود با شبکه اجتماعی
     console.log(`ورود با ${provider}`);
   };
 

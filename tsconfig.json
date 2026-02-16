@@ -26,5 +26,5 @@
     "resources/js/**/*.ts",
     "resources/js/**/*.d.ts",
     "resources/js/**/*.tsx"
-, "resources/js/components/layout/Header.tsx"  ]
+, "resources/js/components/layout/Header.tsx", "resources/js/app/login/Pages.jsx"  ]
 }
